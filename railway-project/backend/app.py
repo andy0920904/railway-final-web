@@ -27,13 +27,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://railway-final-web.vercel.app"  # 🌟 已經修正為正確的單一 https:// 網址
+        "https://railway-final-web.vercel.app",
+        "https://railway-final-m0hqr4au2-angle5.vercel.app"  # 👈 把這串也加進去
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # ==========================================
 # API 授權金鑰設定
 # ==========================================
