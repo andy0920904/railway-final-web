@@ -122,7 +122,8 @@ const Chatbot = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://railway-final-web-production.up.railway.app/api/chat', {
+      // 🌟 修改：換成 Railway 的 HTTPS 網址
+      const response = await fetch('https://railway-final-web-production.up.railway.app/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: textToSend }),
