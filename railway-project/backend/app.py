@@ -61,7 +61,7 @@ for f in [f for f in DATA_DIR.iterdir() if f.is_file() and f.suffix.lower() == '
         langchain_docs.extend(text_splitter.split_documents([Document(page_content=text, metadata={"source": f.name})]))
     except: pass
 
-embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-base")
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 rag_chain = None
 
 if langchain_docs:
