@@ -169,7 +169,8 @@ function Timetable() {
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/stations')
+    // 🌟 修改：換成 Railway 的 HTTPS 網址
+    fetch('https://railway-final-web-production.up.railway.app/api/stations')
       .then((res) => res.json())
       .then((data) => {
         if (data.grouped_stations) {
@@ -198,7 +199,8 @@ function Timetable() {
     const departureTime = `${selectedHour}:${selectedMinute}`;
 
     try {
-      const response = await fetch('http://railway-final-web-production.up.railway.app/api/timetable', {
+      // 🌟 修改：換成 Railway 的 HTTPS 網址
+      const response = await fetch('https://railway-final-web-production.up.railway.app/api/timetable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
