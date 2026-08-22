@@ -97,7 +97,7 @@ function Home({ setActiveTab }) {
 
       <div style={styles.heroSection}>
         <QTrainHero />
-        <h2 style={styles.heroTitle}>歡迎搭乘 臺鐵智能客服平台</h2>
+        <h2 style={styles.heroTitle}>歡迎搭乘 歐郎智能客服平台</h2>
         <p style={styles.heroSubtitle}>請點擊下方車票，選擇您需要辦理的智慧服務</p>
       </div>
 
