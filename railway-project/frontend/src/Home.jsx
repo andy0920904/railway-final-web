@@ -1,39 +1,39 @@
 import React from 'react';
 
-// 🎨 超可愛的 Q 版歐郎 (黑人頭) SVG (加入了 class 準備綁定動畫)
+// 🎨 Q 版歐郎 (深色肌膚黑人頭) SVG (保留左右搖擺與跳躍動畫)
 const QTrainHero = () => (
   <svg width="280" height="260" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* 底部陰影 (獨立動畫：跳躍時會縮小變淡) */}
     <ellipse className="train-shadow" cx="120" cy="225" rx="70" ry="8" fill="#E2E8F0" />
     
-    {/* 👤 歐郎主體群組 (保留原本的跑動與左右搖擺跳躍動畫) */}
+    {/* 👤 歐郎頭部主體群組 (保留原本的跑動與左右搖擺跳躍動畫) */}
     <g className="train-body">
       {/* 巨大的Ｑ版爆炸頭 (黑人頭特色) */}
-      <circle cx="120" cy="90" r="65" fill="#1E293B" />
-      <circle cx="75" cy="110" r="35" fill="#1E293B" />
-      <circle cx="165" cy="110" r="35" fill="#1E293B" />
-      <circle cx="75" cy="75" r="35" fill="#1E293B" />
-      <circle cx="165" cy="75" r="35" fill="#1E293B" />
+      <circle cx="120" cy="85" r="70" fill="#1C1917" />
+      <circle cx="65" cy="110" r="40" fill="#1C1917" />
+      <circle cx="175" cy="110" r="40" fill="#1C1917" />
+      <circle cx="70" cy="70" r="38" fill="#1C1917" />
+      <circle cx="170" cy="70" r="38" fill="#1C1917" />
       
-      {/* 臉部主體 (Q版圓臉) */}
-      <rect x="70" y="80" width="100" height="110" rx="35" fill="#FDE047" stroke="#CBD5E1" strokeWidth="4"/>
+      {/* 臉部主體 (Q版深色圓臉) */}
+      <rect x="70" y="75" width="100" height="105" rx="35" fill="#78350F" stroke="#451A03" strokeWidth="4"/>
       
       {/* 眼睛 */}
-      <circle cx="95" cy="125" r="8" fill="#0F172A" />
-      <circle cx="145" cy="125" r="8" fill="#0F172A" />
-      <circle cx="97" cy="122" r="3" fill="#FFFFFF" /> {/* 眼神反光 */}
-      <circle cx="147" cy="122" r="3" fill="#FFFFFF" />
+      <circle cx="95" cy="120" r="8" fill="#FFFFFF" />
+      <circle cx="95" cy="120" r="4" fill="#0F172A" />
+      <circle cx="145" cy="120" r="8" fill="#FFFFFF" />
+      <circle cx="145" cy="120" r="4" fill="#0F172A" />
       
-      {/* 腮紅 */}
-      <ellipse cx="85" cy="142" rx="8" ry="5" fill="#FECACA" opacity="0.9" />
-      <ellipse cx="155" cy="142" rx="8" ry="5" fill="#FECACA" opacity="0.9" />
+      {/* 俏皮的眉毛 */}
+      <path d="M 88 105 L 102 108" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+      <path d="M 138 108 L 152 105" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+      
+      {/* 腮紅 (深色肌膚搭配微紅) */}
+      <ellipse cx="85" cy="138" rx="8" ry="4" fill="#B91C1C" opacity="0.6" />
+      <ellipse cx="155" cy="138" rx="8" ry="4" fill="#B91C1C" opacity="0.6" />
       
       {/* 開心微笑的嘴巴 */}
-      <path d="M 105 150 Q 120 165 135 150" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" fill="none" />
-      
-      {/* 身體 / 衣服領口 */}
-      <path d="M 85 190 L 120 170 L 155 190 Z" fill="#2563EB" />
-      <rect x="80" y="190" width="80" height="30" rx="12" fill="#1E3A8A" />
+      <path d="M 105 145 Q 120 160 135 145" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" fill="none" />
     </g>
   </svg>
 );
