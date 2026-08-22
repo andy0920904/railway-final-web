@@ -25,7 +25,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=[
+        "http://localhost:3000",
+        "https://你的網址.vercel.app"  # 記得換成你真正的 Vercel 網址
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
