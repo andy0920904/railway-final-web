@@ -28,12 +28,13 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "https://railway-final-web.vercel.app",
-        "https://railway-final-m0hqr4au2-angle5.vercel.app"  # 👈 把這串也加進去
+        "https://railway-final-m0hqr4au2-angle5.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # ==========================================
 # API 授權金鑰設定
 # ==========================================
@@ -47,6 +48,11 @@ GROQ_API_KEY = "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".strip(
 
 STATION_NAME_TO_ID = {}
 TPASS_RULES = {} 
+
+# 🌟 新增：根目錄檢查路由，避免直接點擊 Railway 網址出現 502 錯誤
+@app.get("/")
+async def root():
+    return {"status": "success", "message": "臺鐵智慧小助手後端伺服器運行中！"}
 
 # ==========================================
 # EP1：AI 規章智能客服
