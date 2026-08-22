@@ -76,7 +76,7 @@ rag_chain = None
 if langchain_docs:
     vectorstore = Chroma.from_documents(documents=langchain_docs, embedding=embeddings)
     retriever = vectorstore.as_retriever(search_kwargs={"k": 6})
-    llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0, groq_api_key=GROQ_API_KEY)
+    llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0, groq_api_key=GROQ_API_KEY)
     
     prompt_template = ChatPromptTemplate.from_template("""
     請根據以下的參考資料回答使用者的問題。請務必使用「繁體中文」回答。
