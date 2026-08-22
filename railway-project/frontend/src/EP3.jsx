@@ -166,7 +166,7 @@ function EP3() {
     setTpassResult(null);
 
     try {
-      const fareRes = await fetch(`http://127.0.0.1:8000/api/fare?origin=${origin}&destination=${destination}`);
+      const fareRes = await fetch(`http://railway-final-web-production.up.railway.app/api/fare?origin=${origin}&destination=${destination}`);
       const fareData = await fareRes.json();
       
       if (fareData.status !== 'success') {
@@ -175,7 +175,7 @@ function EP3() {
       
       const minPrice = fareData.price;
 
-      const evalRes = await fetch('http://127.0.0.1:8000/api/evaluate_tpass', {
+      const evalRes = await fetch('http://railway-final-web-production.up.railway.app/api/evaluate_tpass', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ origin, destination, single_trip_price: minPrice, monthly_commute_days: commuteDays }),
