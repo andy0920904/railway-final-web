@@ -198,7 +198,7 @@ function Timetable() {
     const departureTime = `${selectedHour}:${selectedMinute}`;
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/timetable', {
+      const response = await fetch('http://railway-final-web-production.up.railway.app/api/timetable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
