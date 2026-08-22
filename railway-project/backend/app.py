@@ -27,7 +27,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://https://railway-final-web.vercel.app"  # 記得換成你真正的 Vercel 網址
+        "https://railway-final-web.vercel.app"  # 🌟 已經修正為正確的單一 https:// 網址
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -108,8 +108,6 @@ async def chat(request: ChatRequest):
 # ==========================================
 # 🌟 EP3 核心升級：導入官方營業里程表與階梯式計價公式
 # ==========================================
-# 🌟 EP3 核心升級：導入官方營業里程表與階梯式計價公式
-# ==========================================
 COUNTY_STATIONS_MAP = {
     "基隆市": ["基隆", "三坑", "八堵", "七堵", "百福", "海科館"],
     "臺北市": ["南港", "松山", "臺北", "萬華"],
@@ -130,7 +128,6 @@ COUNTY_STATIONS_MAP = {
     "臺東縣": ["池上", "海端", "關山", "瑞和", "瑞源", "鹿野", "山里", "臺東", "康樂", "知本", "太麻里", "金崙", "瀧溪", "大武"]
 }
 
-# 全面以官方 PDF 營業里程直接建表
 OFFICIAL_MILEAGE = {
     "縱貫線": [
         ("基隆", 0.0), ("三坑", 1.5), ("八堵", 3.9), ("七堵", 6.2), ("百福", 8.9),
@@ -203,7 +200,6 @@ OFFICIAL_MILEAGE = {
     "深澳線": [("瑞芳", 0.0), ("海科館", 4.3), ("八斗子", 4.7)]
 }
 
-# 動態生成圖陣列 (消除手刻 Edge 帶來的誤差)
 GRAPH = {}
 for line_name, stations in OFFICIAL_MILEAGE.items():
     for i in range(len(stations) - 1):
@@ -214,12 +210,10 @@ for line_name, stations in OFFICIAL_MILEAGE.items():
         if s1 not in GRAPH: GRAPH[s1] = {}
         if s2 not in GRAPH: GRAPH[s2] = {}
         
-        # 取最短節點連線 (處理例如竹南、彰化等交會站)
         if s2 not in GRAPH[s1] or dist < GRAPH[s1][s2]:
             GRAPH[s1][s2] = dist
             GRAPH[s2][s1] = dist
 
-# 🌟 全新費率級距表 (乘車日 114 年 6 月 23 日生效)
 FARE_RATES = {
     "自強": [(50, 3.39), (50, 2.98), (100, 2.81), (100, 2.37), (float('inf'), 2.20)],
     "莒光": [(50, 2.61), (50, 2.30), (100, 2.17), (100, 1.83), (float('inf'), 1.70)],
@@ -227,7 +221,6 @@ FARE_RATES = {
 }
 
 def get_tiered_fare(distance: float, train_type: str) -> int:
-    """計算台鐵階梯式遞減票價"""
     rates = FARE_RATES.get(train_type)
     total_fare = 0.0
     remaining_dist = distance
@@ -243,10 +236,8 @@ def get_tiered_fare(distance: float, train_type: str) -> int:
 
 def calculate_fares(start: str, end: str):
     start, end = start.replace("台", "臺"), end.replace("台", "臺")
-    
     if start not in GRAPH or end not in GRAPH: return {"自強": 0, "莒光": 0, "區間": 0}
     
-    # Dijkstra 尋找實體最短里程
     queue = [(0, start)]
     visited = set()
     shortest_dist = -1
@@ -263,8 +254,6 @@ def calculate_fares(start: str, end: str):
                 heapq.heappush(queue, (dist + weight, neighbor))
                 
     if shortest_dist < 0: return {"自強": 0, "莒光": 0, "區間": 0}
-    
-    # 官方公式：未滿 10 公里以 10 公里計價
     base_dist = max(10.0, shortest_dist)
     
     return {
@@ -285,7 +274,6 @@ def get_tdx_token():
 
 @app.on_event("startup")
 async def startup_event():
-    # 1. 載入 TDX 車站清單
     token = get_tdx_token()
     if token:
         try:
@@ -296,7 +284,6 @@ async def startup_event():
                 STATION_NAME_TO_ID[name_zh.replace("臺", "台")] = st["StationID"]
         except: pass
         
-    # 2. 全域快取 TPASS 規則庫
     global TPASS_RULES
     rule_path = Path("tpass_rules.json")
     if rule_path.exists():
@@ -336,7 +323,6 @@ async def query_timetable(query: TimetableQuery):
         res.raise_for_status()
         trains_data = res.json()
         
-        # 取得即時誤點資訊
         live_data = {}
         try:
             live_res = requests.get(f"https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveBoard/Station/{origin_id}?$format=JSON", headers={"authorization": f"Bearer {token}"}, timeout=3)
@@ -357,7 +343,6 @@ async def query_timetable(query: TimetableQuery):
             arr_time = t["DestinationStopTime"]["ArrivalTime"]
             train_name = t["DailyTrainInfo"]["TrainTypeName"]["Zh_tw"]
             
-            # 車種判斷與價格綁定
             if any(k in train_name for k in ["自強", "太魯閣", "普悠瑪", "3000"]):
                 train_type = "自強(EMU3000)" if "3000" in train_name else train_name.split("(")[0].strip()
                 category = "reserved"
