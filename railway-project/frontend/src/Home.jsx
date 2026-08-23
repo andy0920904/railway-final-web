@@ -1,39 +1,43 @@
 import React from 'react';
 
-// 🎨 Q 版歐郎 (深色肌膚黑人頭) SVG (保留左右搖擺與跳躍動畫)
+// 🎨 超可愛的正面 Q 版火車 SVG (加入了 class 準備綁定動畫)
 const QTrainHero = () => (
   <svg width="280" height="260" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* 底部陰影 (獨立動畫：跳躍時會縮小變淡) */}
-    <ellipse className="train-shadow" cx="120" cy="225" rx="70" ry="8" fill="#E2E8F0" />
+    <ellipse className="train-shadow" cx="120" cy="225" rx="80" ry="8" fill="#E2E8F0" />
     
-    {/* 👤 歐郎頭部主體群組 (保留原本的跑動與左右搖擺跳躍動畫) */}
+    {/* 🚂 火車主體群組 (跑動與左右搖擺跳躍動畫) */}
     <g className="train-body">
-      {/* 巨大的Ｑ版爆炸頭 (黑人頭特色) */}
-      <circle cx="120" cy="85" r="70" fill="#1C1917" />
-      <circle cx="65" cy="110" r="40" fill="#1C1917" />
-      <circle cx="175" cy="110" r="40" fill="#1C1917" />
-      <circle cx="70" cy="70" r="38" fill="#1C1917" />
-      <circle cx="170" cy="70" r="38" fill="#1C1917" />
+      {/* 頂部集電弓 */}
+      <path d="M 105 40 L 95 15 L 145 15 L 135 40 Z" fill="#94A3B8" />
+      <line x1="85" y1="15" x2="155" y2="15" stroke="#64748B" strokeWidth="4" strokeLinecap="round" />
       
-      {/* 臉部主體 (Q版深色圓臉) */}
-      <rect x="70" y="75" width="100" height="105" rx="35" fill="#78350F" stroke="#451A03" strokeWidth="4"/>
+      {/* 火車主體 */}
+      <rect x="50" y="40" width="140" height="170" rx="35" fill="#F8FAFC" stroke="#CBD5E1" strokeWidth="4"/>
+      <rect x="60" y="50" width="120" height="150" rx="25" fill="#FFFFFF" />
       
-      {/* 眼睛 */}
-      <circle cx="95" cy="120" r="8" fill="#FFFFFF" />
-      <circle cx="95" cy="120" r="4" fill="#0F172A" />
-      <circle cx="145" cy="120" r="8" fill="#FFFFFF" />
-      <circle cx="145" cy="120" r="4" fill="#0F172A" />
+      {/* 擋風玻璃 (大臉) */}
+      <rect x="70" y="65" width="100" height="60" rx="16" fill="#0F172A" />
+      <rect x="75" y="70" width="80" height="15" rx="6" fill="#1E293B" /> {/* 玻璃反光 */}
       
-      {/* 俏皮的眉毛 */}
-      <path d="M 88 105 L 102 108" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
-      <path d="M 138 108 L 152 105" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+      {/* 腮紅 */}
+      <ellipse cx="78" cy="140" rx="8" ry="5" fill="#FECACA" opacity="0.9" />
+      <ellipse cx="162" cy="140" rx="8" ry="5" fill="#FECACA" opacity="0.9" />
       
-      {/* 腮紅 (深色肌膚搭配微紅) */}
-      <ellipse cx="85" cy="138" rx="8" ry="4" fill="#B91C1C" opacity="0.6" />
-      <ellipse cx="155" cy="138" rx="8" ry="4" fill="#B91C1C" opacity="0.6" />
+      {/* 微笑的嘴巴 */}
+      <path d="M 105 145 Q 120 155 135 145" stroke="#475569" strokeWidth="4" strokeLinecap="round" fill="none" />
       
-      {/* 開心微笑的嘴巴 */}
-      <path d="M 105 145 Q 120 160 135 145" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" fill="none" />
+      {/* 車燈 */}
+      <circle cx="85" cy="165" r="10" fill="#FACC15" />
+      <circle cx="155" cy="165" r="10" fill="#FACC15" />
+      <circle cx="85" cy="165" r="4" fill="#FEF08A" />
+      <circle cx="155" cy="165" r="4" fill="#FEF08A" />
+      
+      {/* 底部排障器 */}
+      <path d="M 60 190 Q 120 215 180 190 L 165 210 Q 120 225 75 210 Z" fill="#94A3B8" />
+      
+      {/* 台鐵經典藍線條裝飾 */}
+      <path d="M 52 180 L 188 180" stroke="#1E3A8A" strokeWidth="6" />
     </g>
   </svg>
 );
@@ -50,7 +54,7 @@ function Home({ setActiveTab }) {
             to { opacity: 1; transform: translateY(0); }
           }
           
-          /* 👤 主體的動態：左右移動 + 輕微旋轉搖擺 + 向上彈跳 */
+          /* 🚂 火車本體的動態：左右移動 + 輕微旋轉搖擺 + 向上彈跳 */
           @keyframes trainBodyRun {
             0% { transform: translate(-30px, 0px) rotate(-3deg); }
             25% { transform: translate(0px, -8px) rotate(0deg); }
@@ -59,7 +63,7 @@ function Home({ setActiveTab }) {
             100% { transform: translate(-30px, 0px) rotate(-3deg); }
           }
 
-          /* ☁️ 陰影的動態：配合彈躍時縮小變淡，並跟隨左右移動 */
+          /* ☁️ 陰影的動態：配合火車彈躍時縮小變淡，並跟隨左右移動 */
           @keyframes trainShadowRun {
             0% { transform: translate(-30px, 0px); opacity: 1; }
             25% { transform: translate(0px, 0px) scale(0.85); opacity: 0.5; }
@@ -93,7 +97,7 @@ function Home({ setActiveTab }) {
 
       <div style={styles.heroSection}>
         <QTrainHero />
-        <h2 style={styles.heroTitle}>歡迎搭乘 歐郎智能客服平台</h2>
+        <h2 style={styles.heroTitle}>歡迎搭乘 台鐵智能客服平台</h2>
         <p style={styles.heroSubtitle}>請點擊下方車票，選擇您需要辦理的智慧服務</p>
       </div>
 
