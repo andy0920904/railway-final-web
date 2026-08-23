@@ -49,7 +49,6 @@ GROQ_API_KEY = "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".strip(
 STATION_NAME_TO_ID = {}
 TPASS_RULES = {} 
 
-# 🌟 新增：根目錄檢查路由，避免直接點擊 Railway 網址出現 502 錯誤
 @app.get("/")
 async def root():
     return {"status": "success", "message": "臺鐵智慧小助手後端伺服器運行中！"}
@@ -240,9 +239,39 @@ def get_tiered_fare(distance: float, train_type: str) -> int:
         
     return math.floor(total_fare + 0.5)
 
+# 🌟 新增：專門處理電子票證跨距計價的演算法
+def get_eticket_fare(distance: float, train_type: str) -> int:
+    # 根據規定，搭乘超過 50 公里之一般自強號需分段計價
+    if train_type == "自強" and distance > 50:
+        local_rates = FARE_RATES["區間"]
+        tze_rates = FARE_RATES["自強"]
+        
+        total_fare = 0.0
+        remaining_dist = distance
+        
+        # 第1段：前50公里以區間車計價
+        tier_dist_1, rate_1 = local_rates[0]
+        current_tier_km = min(remaining_dist, tier_dist_1)
+        total_fare += current_tier_km * rate_1
+        remaining_dist -= current_tier_km
+        
+        # 第2段：超出 50 公里部分，以自強號後續級距 (2.98元起) 計算
+        if remaining_dist > 0:
+            # 跳過自強號最初的 50 公里級距，從後續級距開始計算
+            for tier_dist, rate in tze_rates[1:]:
+                if remaining_dist <= 0: break
+                current_tier_km = min(remaining_dist, tier_dist)
+                total_fare += current_tier_km * rate
+                remaining_dist -= current_tier_km
+                
+        return math.floor(total_fare + 0.5)
+    else:
+        # 50 公里以內之自強號、莒光號與區間車，全程皆按區間車計價
+        return get_tiered_fare(distance, "區間")
+
 def calculate_fares(start: str, end: str):
     start, end = start.replace("台", "臺"), end.replace("台", "臺")
-    if start not in GRAPH or end not in GRAPH: return {"自強": 0, "莒光": 0, "區間": 0}
+    if start not in GRAPH or end not in GRAPH: return {"自強": 0, "莒光": 0, "區間": 0, "距離": 0}
     
     queue = [(0, start)]
     visited = set()
@@ -259,13 +288,14 @@ def calculate_fares(start: str, end: str):
             if neighbor not in visited:
                 heapq.heappush(queue, (dist + weight, neighbor))
                 
-    if shortest_dist < 0: return {"自強": 0, "莒光": 0, "區間": 0}
+    if shortest_dist < 0: return {"自強": 0, "莒光": 0, "區間": 0, "距離": 0}
     base_dist = max(10.0, shortest_dist)
     
     return {
         "自強": get_tiered_fare(base_dist, "自強"),
         "莒光": get_tiered_fare(base_dist, "莒光"),
-        "區間": get_tiered_fare(base_dist, "區間")
+        "區間": get_tiered_fare(base_dist, "區間"),
+        "距離": round(base_dist, 2)
     }
 
 def get_tdx_token():
@@ -341,6 +371,7 @@ async def query_timetable(query: TimetableQuery):
         max_dt = query_dt + timedelta(hours=8)
 
         fares = calculate_fares(query.origin, query.destination)
+        dist = fares.get("距離", 0)
         results = []
         
         for t in trains_data:
@@ -349,15 +380,35 @@ async def query_timetable(query: TimetableQuery):
             arr_time = t["DestinationStopTime"]["ArrivalTime"]
             train_name = t["DailyTrainInfo"]["TrainTypeName"]["Zh_tw"]
             
+            # 🌟 新增：電子票證屬性初始化
+            e_ticket_allowed = True
+            e_ticket_price = 0
+            e_ticket_note = ""
+            
             if any(k in train_name for k in ["自強", "太魯閣", "普悠瑪", "3000"]):
                 train_type = "自強(EMU3000)" if "3000" in train_name else train_name.split("(")[0].strip()
                 category = "reserved"
                 exact_price = fares["自強"]
+                
+                # 判定新自強號與觀光列車禁刷電子票證
+                if any(k in train_name for k in ["3000", "太魯閣", "普悠瑪", "觀光"]):
+                    e_ticket_allowed = False
+                    e_ticket_note = "此車種不開放電子票證"
+                else:
+                    e_ticket_price = get_eticket_fare(dist, "自強")
+                    if dist <= 50:
+                        e_ticket_note = "50公里內，以區間車票價計收"
+                    else:
+                        e_ticket_note = "超過50公里，前50km以區間車計收"
             elif "莒光" in train_name:
                 train_type, category, exact_price = "莒光號", "reserved", fares["莒光"]
+                e_ticket_price = get_eticket_fare(dist, "莒光")
+                e_ticket_note = "按區間車票價計收"
             else:
                 train_type = "區間快" if "區間快" in train_name else "區間車"
                 category, exact_price = "non_reserved", fares["區間"]
+                e_ticket_price = exact_price
+                e_ticket_note = ""
 
             if query.category_filter != "all" and category != query.category_filter: continue
 
@@ -377,6 +428,10 @@ async def query_timetable(query: TimetableQuery):
                     "arrival_time": arr_time, 
                     "price": exact_price, 
                     "delay_minutes": live_data.get(train_no, 0), 
+                    "distance": dist,
+                    "e_ticket_allowed": e_ticket_allowed,
+                    "e_ticket_price": e_ticket_price,
+                    "e_ticket_note": e_ticket_note,
                     "_sort_time": tdt
                 })
 
