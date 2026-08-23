@@ -85,17 +85,15 @@ const StationInput = ({ value, onChange, allStations, placeholder }) => {
     .filter(station => station.rank < 99) 
     .sort((a, b) => a.rank - b.rank);     
 
-  // 🌟 新增：監聽鍵盤 Enter 事件
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); // 防止觸發其他表單送出
-      // 確保選單是開著的，且有過濾出至少一個車站
+      e.preventDefault();
       if (isOpen && filteredStations.length > 0) {
         const firstStation = filteredStations[0].name;
-        onChange(firstStation);        // 更新父層狀態
-        setSearchTerm(firstStation);   // 更新輸入框文字
-        setIsOpen(false);              // 收起選單
-        if (inputRef.current) inputRef.current.blur(); // 讓輸入框失去焦點，收起手機虛擬鍵盤
+        onChange(firstStation);        
+        setSearchTerm(firstStation);   
+        setIsOpen(false);              
+        if (inputRef.current) inputRef.current.blur(); 
       }
     }
   };
@@ -113,7 +111,7 @@ const StationInput = ({ value, onChange, allStations, placeholder }) => {
           setIsOpen(true);
         }}
         onFocus={() => setIsOpen(true)}
-        onKeyDown={handleKeyDown} // 🌟 綁定事件
+        onKeyDown={handleKeyDown} 
       />
       
       {searchTerm && (
@@ -169,7 +167,7 @@ function Timetable() {
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    // 🌟 修改：換成 Railway 的 HTTPS 網址
+    // ⚠️ 已經幫你切換為雲端 Railway 正式機網址
     fetch('https://railway-final-web-production.up.railway.app/api/stations')
       .then((res) => res.json())
       .then((data) => {
@@ -199,7 +197,7 @@ function Timetable() {
     const departureTime = `${selectedHour}:${selectedMinute}`;
 
     try {
-      // 🌟 修改：換成 Railway 的 HTTPS 網址
+      // ⚠️ 已經幫你切換為雲端 Railway 正式機網址
       const response = await fetch('https://railway-final-web-production.up.railway.app/api/timetable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -300,6 +298,29 @@ function Timetable() {
             {origin} ➔ {destination} 查詢結果 (共 {results.length} 班次)
           </h3>
 
+          {/* 🌟 頂部電子票證提示區塊 */}
+          {results.length > 0 && results[0].distance > 0 && (
+            <div style={{ backgroundColor: '#F0FDF4', border: '1px solid #6EE7B7', padding: '16px', borderRadius: '10px', marginBottom: '16px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+               <span style={{ fontSize: '24px' }}>💳</span>
+               <div>
+                 <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#065F46', marginBottom: '4px' }}>
+                   本路線總里程：{results[0].distance} 公里
+                 </div>
+                 {results[0].distance <= 50 ? (
+                   <div style={{ fontSize: '13px', color: '#047857', lineHeight: '1.5' }}>
+                     ✅ <strong>符合 50 公里內電子票證優惠！</strong><br/>
+                     搭乘一般自強號或莒光號，全程均享「區間車票價」扣款優惠。
+                   </div>
+                 ) : (
+                   <div style={{ fontSize: '13px', color: '#047857', lineHeight: '1.5' }}>
+                     ⚠️ <strong>總里程已超過 50 公里</strong><br/>
+                     搭乘一般自強號，票價將分為兩段計算：前 50 公里以區間車計價，超過部分以自強號費率計價。
+                   </div>
+                 )}
+               </div>
+            </div>
+          )}
+
           {results.length === 0 ? (
             <div style={styles.emptyCard}>⚠️ 該時段或指定車種無符合條件之列車班次</div>
           ) : (
@@ -316,10 +337,32 @@ function Timetable() {
                       <span style={styles.delayBadge}>🔴 晚點 {item.delay_minutes} 分</span>
                     )}
                     
-                    <span style={{ marginLeft: 'auto', fontWeight: 'bold', color: '#DC2626', fontSize: '16px' }}>
-                      NT$ {item.price}
-                    </span>
+                    {/* 🌟 右側的票價與電子票證區塊 (加入白名單防護與不換行設定，刪除「原價」文字) */}
+                    <div style={{ marginLeft: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                      <span style={{ fontWeight: 'bold', color: '#DC2626', fontSize: '16px', whiteSpace: 'nowrap' }}>
+                        NT$ {item.price}
+                      </span>
+                      
+                      {/* 如果不是區間車，且確定有收到新版後端資料時，才顯示電子票證的狀態 */}
+                      {item.e_ticket_allowed !== undefined && !item.train_type.includes('區間') && (
+                        item.e_ticket_allowed === false ? (
+                          <div style={{ fontSize: '11px', color: '#991B1B', backgroundColor: '#FEE2E2', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
+                            🚫 {item.e_ticket_note}
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <span style={{ fontSize: '11px', color: '#059669', backgroundColor: '#D1FAE5', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
+                              刷電子票證 NT$ {item.e_ticket_price}
+                            </span>
+                            <span style={{ fontSize: '10px', color: '#64748B', marginTop: '2px', whiteSpace: 'nowrap' }}>
+                              ({item.e_ticket_note})
+                            </span>
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
+
                   <div style={styles.timeSchedule}>
                     <div style={styles.timeBox}>
                       <span style={styles.timeDigit}>{item.departure_time}</span>
