@@ -201,7 +201,8 @@ function EP3() {
   return (
     <div style={styles.card}>
       <div style={styles.cardHeader}>
-        <span style={styles.headerIcon}>[票價]</span>
+        {/* 🌟 已經將文字改為首頁的錢袋符號 */}
+        <span style={styles.headerIcon}>💰</span>
         <div>
           <h2 style={styles.cardTitle}>票價查詢與智慧方案推薦</h2>
           <p style={styles.cardSubtitle}>輸入通勤路線與頻率，系統將為您試算最划算的定期票與優惠方案</p>
