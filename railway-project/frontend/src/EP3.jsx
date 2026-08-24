@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+// 🌟 幫客群標籤加回專屬的可愛小圖示
 const getFrequencyLabel = (days) => {
-  if (days <= 10) return "偶爾搭乘客群";
-  if (days <= 18) return "彈性排班 / 兼職客群";
-  if (days <= 24) return "學生 / 一般上班族";
-  return "全勤 / 重度通勤客群";
+  if (days <= 10) return "🚶 偶爾搭乘客群";
+  if (days <= 18) return "🏃 彈性排班 / 兼職客群";
+  if (days <= 24) return "💼 學生 / 一般上班族";
+  return "🔥 全勤 / 重度通勤客群";
 };
 
 const StationInput = ({ value, onChange, allStations, placeholder }) => {
@@ -95,7 +96,7 @@ const StationInput = ({ value, onChange, allStations, placeholder }) => {
           style={styles.clearBtn}
           title="清除"
         >
-          X
+          ✖
         </button>
       )}
 
@@ -129,7 +130,7 @@ function EP3() {
   const [allStations, setAllStations] = useState([]);
   const [origin, setOrigin] = useState('臺北');
   const [destination, setDestination] = useState('桃園');
-  const [commuteDays, setCommuteDays] = useState(22);
+  const [commuteDays, setCommuteDays] = useState(30);
   const [tpassResult, setTpassResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -201,7 +202,6 @@ function EP3() {
   return (
     <div style={styles.card}>
       <div style={styles.cardHeader}>
-        {/* 🌟 已經將文字改為首頁的錢袋符號 */}
         <span style={styles.headerIcon}>💰</span>
         <div>
           <h2 style={styles.cardTitle}>票價查詢與智慧方案推薦</h2>
@@ -221,7 +221,7 @@ function EP3() {
             />
           </div>
 
-          <div style={styles.arrowIcon}>-&gt;</div>
+          <div style={styles.arrowIcon}>➔</div>
 
           <div style={styles.fieldGroup}>
             <label style={styles.label}>終點站</label>
@@ -256,7 +256,8 @@ function EP3() {
         </div>
 
         <button style={styles.submitBtn} onClick={handleCalculate} disabled={loading}>
-          {loading ? '雲端試算中...' : '開始智慧試算'}
+          {/* 🌟 補回按鈕的燈泡圖示 */}
+          {loading ? '☁️ 雲端試算中...' : '💡 開始智慧試算'}
         </button>
       </div>
 
@@ -265,24 +266,30 @@ function EP3() {
       {tpassResult && (
         <div style={styles.resultsSection}>
           <div style={styles.tpassCard}>
+            {/* 🌟 補回結果標題的圖表圖示 */}
             <h4 style={styles.tpassTitle}>
-              試算結果：{tpassResult.queryOrigin} -&gt; {tpassResult.queryDestination}
+              📊 試算結果：{tpassResult.queryOrigin} ➔ {tpassResult.queryDestination}
             </h4>
             
             <div style={styles.tpassDescBlock}>
               <p style={{ margin: '0 0 8px 0', fontSize: '15px' }}>
                 每月共搭乘 <strong>{tpassResult.total_trips} 趟</strong> (單趟 NT$ {tpassResult.basePrice})：
               </p>
-              <ul style={{ margin: 0, paddingLeft: '24px', lineHeight: '1.8' }}>
-                <li>
-                  {tpassResult.normal_cost === tpassResult.freq_monthly_cost ? '-' : 'x'} 若無任何優惠，原票價總計：
+              <ul style={{ margin: 0, paddingLeft: '24px', lineHeight: '1.8', listStyleType: 'none', marginLeft: '-24px' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* 🌟 補回 ❌ 圖示 */}
+                  {tpassResult.normal_cost === tpassResult.freq_monthly_cost ? '➖' : '❌'} 
+                  <span>若無任何優惠，原票價總計：</span>
                   {tpassResult.normal_cost === tpassResult.freq_monthly_cost ? (
                     <span>NT$ {tpassResult.normal_cost}</span>
                   ) : (
                     <del>NT$ {tpassResult.normal_cost}</del>
                   )}
                 </li>
-                <li>台鐵常客優惠 ({tpassResult.discount_name})：每月實際花費約 <strong>NT$ {tpassResult.freq_monthly_cost}</strong></li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* 🌟 補回 ✅ 圖示 */}
+                  ✅ <span>台鐵常客優惠 ({tpassResult.discount_name})：每月實際花費約 <strong>NT$ {tpassResult.freq_monthly_cost}</strong></span>
+                </li>
               </ul>
             </div>
             
