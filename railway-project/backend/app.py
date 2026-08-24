@@ -368,7 +368,9 @@ async def query_timetable(query: TimetableQuery):
         
         user_time_str = query.departure_time[:5] if len(query.departure_time) >= 5 else "00:00"
         query_dt = datetime.strptime(f"2000-01-01 {user_time_str}", "%Y-%m-%d %H:%M")
-        max_dt = query_dt + timedelta(hours=8)
+        
+        # 🌟 已經幫你把此處的時效範圍修改為 4 小時
+        max_dt = query_dt + timedelta(hours=4)
 
         fares = calculate_fares(query.origin, query.destination)
         dist = fares.get("距離", 0)
@@ -380,7 +382,7 @@ async def query_timetable(query: TimetableQuery):
             arr_time = t["DestinationStopTime"]["ArrivalTime"]
             train_name = t["DailyTrainInfo"]["TrainTypeName"]["Zh_tw"]
             
-            # 🌟 新增：電子票證屬性初始化
+            # 電子票證屬性初始化
             e_ticket_allowed = True
             e_ticket_price = 0
             e_ticket_note = ""
