@@ -99,11 +99,11 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const chatWindowRef = useRef(null);
 
-  // 熱門快捷問題 (車票按鈕)
+  // 🌟 修改此處：熱門快捷問題換成高命中率的展示題
   const quickQuestions = [
-    '🎫 優待卡使用限制',
+    '🎫 刷悠遊卡可以搭普悠瑪嗎？',
     '💳 電子票證同站進出',
-    '⏱️ 列車晚點賠償標準',
+    '🎓 大學生優惠購票規定',
   ];
 
   // 自動捲動到最底部
