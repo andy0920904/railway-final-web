@@ -28,13 +28,13 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "https://railway-final-web.vercel.app",
-        "https://railway-final-m0hqr4au2-angle5.vercel.app"
+        "https://railway-final-m0hqr4au2-angle5.vercel.app",
+        "https://railway-final-a4ewzp0u9-angle5.vercel.app"  # 🌟 補上你現在這串新的網址
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # ==========================================
 # API 授權金鑰設定
 # ==========================================
