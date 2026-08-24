@@ -256,7 +256,6 @@ function EP3() {
         </div>
 
         <button style={styles.submitBtn} onClick={handleCalculate} disabled={loading}>
-          {/* 🌟 補回按鈕的燈泡圖示 */}
           {loading ? '☁️ 雲端試算中...' : '💡 開始智慧試算'}
         </button>
       </div>
@@ -266,9 +265,9 @@ function EP3() {
       {tpassResult && (
         <div style={styles.resultsSection}>
           <div style={styles.tpassCard}>
-            {/* 🌟 補回結果標題的圖表圖示 */}
+            {/* 🌟 已幫你把 📊 圖示拿掉，維持乾淨的文字 */}
             <h4 style={styles.tpassTitle}>
-              📊 試算結果：{tpassResult.queryOrigin} ➔ {tpassResult.queryDestination}
+              試算結果：{tpassResult.queryOrigin} ➔ {tpassResult.queryDestination}
             </h4>
             
             <div style={styles.tpassDescBlock}>
@@ -277,7 +276,6 @@ function EP3() {
               </p>
               <ul style={{ margin: 0, paddingLeft: '24px', lineHeight: '1.8', listStyleType: 'none', marginLeft: '-24px' }}>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {/* 🌟 補回 ❌ 圖示 */}
                   {tpassResult.normal_cost === tpassResult.freq_monthly_cost ? '➖' : '❌'} 
                   <span>若無任何優惠，原票價總計：</span>
                   {tpassResult.normal_cost === tpassResult.freq_monthly_cost ? (
@@ -287,7 +285,6 @@ function EP3() {
                   )}
                 </li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {/* 🌟 補回 ✅ 圖示 */}
                   ✅ <span>台鐵常客優惠 ({tpassResult.discount_name})：每月實際花費約 <strong>NT$ {tpassResult.freq_monthly_cost}</strong></span>
                 </li>
               </ul>
