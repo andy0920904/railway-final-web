@@ -35,9 +35,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# ==========================================
+# ===========================================
 # API 授權金鑰設定
-# ==========================================
+# ===========================================
 TDX_CLIENT_ID = "C111152214-7eebe85f-e6e9-4f1f"
 TDX_CLIENT_SECRET = "d26d265d-3dff-4bf4-aacc-4c1c797f3f2c"
 TDX_AUTH_URL = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
