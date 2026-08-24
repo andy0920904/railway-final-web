@@ -153,8 +153,14 @@ const StationInput = ({ value, onChange, allStations, placeholder }) => {
 
 function Timetable() {
   const [allStations, setAllStations] = useState([]);
+  
+  // 輸入框中的起訖站狀態
   const [origin, setOrigin] = useState('臺北');
   const [destination, setDestination] = useState('高雄');
+
+  // ✨ 新增：真正按下查詢後，用來鎖定並顯示在標題上的快照狀態
+  const [searchedOrigin, setSearchedOrigin] = useState('臺北');
+  const [searchedDestination, setSearchedDestination] = useState('高雄');
 
   const now = new Date();
   const [selectedHour, setSelectedHour] = useState(String(now.getHours()).padStart(2, '0'));
@@ -167,7 +173,6 @@ function Timetable() {
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    // ⚠️ 已經幫你切換為雲端 Railway 正式機網址
     fetch('https://railway-final-web-production.up.railway.app/api/stations')
       .then((res) => res.json())
       .then((data) => {
@@ -193,11 +198,14 @@ function Timetable() {
     setLoading(true);
     setErrorMsg('');
     setSearched(true);
+    
+    // ✨ 在此處將使用者目前的輸入「快照」存起來，鎖定結果標題
+    setSearchedOrigin(origin);
+    setSearchedDestination(destination);
 
     const departureTime = `${selectedHour}:${selectedMinute}`;
 
     try {
-      // ⚠️ 已經幫你切換為雲端 Railway 正式機網址
       const response = await fetch('https://railway-final-web-production.up.railway.app/api/timetable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -233,7 +241,7 @@ function Timetable() {
         <span style={styles.headerIcon}>🕒</span>
         <div>
           <h2 style={styles.cardTitle}>時刻表與班次查詢</h2>
-          <p style={styles.cardSubtitle}>精確檢索出發時間起 8 小時內所有列車（支援直接輸入站名搜尋）</p>
+          <p style={styles.cardSubtitle}>精確檢索出發時間起 4 小時內所有列車（支援直接輸入站名搜尋）</p>
         </div>
       </div>
 
@@ -294,11 +302,11 @@ function Timetable() {
 
       {searched && !loading && !errorMsg && (
         <div style={styles.resultsSection}>
+          {/* ✨ 此處改為綁定快照變數，完美解決標題提早變更的問題 */}
           <h3 style={styles.resultHeader}>
-            {origin} ➔ {destination} 查詢結果 (共 {results.length} 班次)
+            {searchedOrigin} ➔ {searchedDestination} 查詢結果 (共 {results.length} 班次)
           </h3>
 
-          {/* 🌟 頂部電子票證提示區塊 */}
           {results.length > 0 && results[0].distance > 0 && (
             <div style={{ backgroundColor: '#F0FDF4', border: '1px solid #6EE7B7', padding: '16px', borderRadius: '10px', marginBottom: '16px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                <span style={{ fontSize: '24px' }}>💳</span>
@@ -337,13 +345,11 @@ function Timetable() {
                       <span style={styles.delayBadge}>🔴 晚點 {item.delay_minutes} 分</span>
                     )}
                     
-                    {/* 🌟 右側的票價與電子票證區塊 (加入白名單防護與不換行設定，刪除「原價」文字) */}
                     <div style={{ marginLeft: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
                       <span style={{ fontWeight: 'bold', color: '#DC2626', fontSize: '16px', whiteSpace: 'nowrap' }}>
                         NT$ {item.price}
                       </span>
                       
-                      {/* 如果不是區間車，且確定有收到新版後端資料時，才顯示電子票證的狀態 */}
                       {item.e_ticket_allowed !== undefined && !item.train_type.includes('區間') && (
                         item.e_ticket_allowed === false ? (
                           <div style={{ fontSize: '11px', color: '#991B1B', backgroundColor: '#FEE2E2', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
