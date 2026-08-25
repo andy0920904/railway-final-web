@@ -74,7 +74,7 @@ rag_chain = None
 
 if langchain_docs:
     vectorstore = Chroma.from_documents(documents=langchain_docs, embedding=embeddings)
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 6})
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 8})
     llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0, groq_api_key=GROQ_API_KEY)
     
     prompt_template = ChatPromptTemplate.from_template("""
