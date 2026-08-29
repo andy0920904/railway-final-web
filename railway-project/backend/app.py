@@ -2,6 +2,7 @@ import json
 import requests
 import heapq
 import math
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -44,7 +45,8 @@ TDX_AUTH_URL = "https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/ope
 
 tdx_access_token = None
 tdx_token_expires_at = datetime.min
-GROQ_API_KEY = "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".strip()
+# GROQ_API_KEY = "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".strip()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 STATION_NAME_TO_ID = {}
 TPASS_RULES = {} 
